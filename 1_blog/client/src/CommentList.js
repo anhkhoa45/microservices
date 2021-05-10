@@ -1,44 +1,23 @@
-/* eslint-disable import/no-anonymous-default-export */
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react';
 
-export default ({comments}) => {
+export default ({ comments }) => {
+  const renderedComments = comments.map(comment => {
+    let content;
 
-    // const fetchComments = async () => {
-    //     const res = await axios.get(`http://localhost:4001/posts/${postId}/comments`)
-    //     setComments(res.data)
-    // }
+    if (comment.status === 'approved') {
+      content = comment.content;
+    }
 
-    // useEffect(() => {
-    //     fetchComments()
-    // }, [])
+    if (comment.status === 'pending') {
+      content = 'This comment is awaiting moderation';
+    }
 
-    const renderComments = comments.map(comment => {
-        let content;
+    if (comment.status === 'rejected') {
+      content = 'This comment has been rejected';
+    }
 
-        if (comment.status === 'approved') {
-            content = comment.content
-        }
+    return <li key={comment.id}>{content}</li>;
+  });
 
-        if (comment.status === 'rejected') {
-            content = 'This comment has been rejected'
-        }
-
-        if (comment.status === 'pending') {
-            content = 'This comment has been moderating'
-        }
-
-        return (
-            <li key={comment.id}>{content}</li>
-        )
-    })
-
-    return (
-        <div>
-            <h5>Comments</h5>
-            <ul>
-                {renderComments}
-            </ul>
-        </div>
-    )
-}
+  return <ul>{renderedComments}</ul>;
+};

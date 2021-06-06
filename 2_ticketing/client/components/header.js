@@ -18,7 +18,7 @@ const Header = ({ currentUser }) => {
                 <ul className="nav d-flex align-items-center">
                     {links.map(link => {
                         return (
-                            <li key="href" className="nav-item">
+                            <li key={link.href} className="nav-item">
                                 <Link href={link.href}>
                                     <a className="nav-link">{ link.label }</a>
                                 </Link>

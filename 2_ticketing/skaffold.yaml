@@ -1,11 +1,11 @@
 apiVersion: skaffold/v2beta17
 kind: Config
 portForward:
-  - resourceType: Service
-    resourceName: prometheus-grafana
-    port: 80
-    localPort: 8888
-    namespace: monitoring
+  # - resourceType: Service
+  #   resourceName: prometheus-grafana
+  #   port: 80
+  #   localPort: 8888
+  #   namespace: monitoring
   - resourceType: Service
     resourceName: cmak
     port: 9000
@@ -14,10 +14,10 @@ portForward:
 deploy:
   helm:
     releases:
-      - name: prometheus
-        namespace: monitoring
-        createNamespace: true
-        remoteChart: prometheus-community/kube-prometheus-stack
+      # - name: prometheus
+      #   namespace: monitoring
+      #   createNamespace: true
+      #   remoteChart: prometheus-community/kube-prometheus-stack
       - name: kafka
         remoteChart: bitnami/kafka
         namespace: kafka

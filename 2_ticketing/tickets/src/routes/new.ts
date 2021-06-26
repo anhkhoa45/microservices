@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 import { requireAuth, validateRequest } from '@ak-tickets/common'
 import { Ticket } from '../models/ticket'
+import { kafkaProducer } from '../kafka-client'
+import { TicketCreatedPublisher } from '../events/ticket-created-publisher'
 
 const router = express.Router()
 
@@ -13,7 +15,7 @@ router.post('/api/tickets', requireAuth, [
     body('price')
         .isFloat({ gt: 0 })
         .withMessage('Price must be greater than 0')
-], validateRequest, (req: Request, res: Response) => {
+], validateRequest, async (req: Request, res: Response) => {
     const { title, price } = req.body
 
     const ticket = Ticket.build({
@@ -22,7 +24,15 @@ router.post('/api/tickets', requireAuth, [
         userId: req.currentUser!.id
     })
 
-    ticket.save()
+    const ticketCreatedPublisher = new TicketCreatedPublisher(kafkaProducer.producer)
+    await ticketCreatedPublisher.publish([{
+        id: ticket.id,
+        title: ticket.title,
+        price: ticket.price,
+        userId: ticket.userId
+    }], async () => {
+        await ticket.save()
+    })
 
     res.status(201).send(ticket)
 })

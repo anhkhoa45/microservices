@@ -1,27 +1,9 @@
-import { Kafka } from 'kafkajs'
- 
-const kafka = new Kafka({
-  clientId: `consumer-${Math.floor(Math.random() * 100)}`,
-  brokers: ['kafka.kafka.svc.cluster.local:9092']
-})
-
-const consumer = kafka.consumer({ groupId: `consumer-group` })
+import { TicketCreatedListener } from "./events/ticket-created-listener"
  
 const run = async () => {
   // Consuming
-  await consumer.connect()
-  await consumer.subscribe({ topic: 'test-topic', fromBeginning: true })
- 
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      console.log({
-        partition,
-        offset: message.offset,
-        value: message.value?.toString(),
-      })
-    },
-  })
+  const ticketCreatedListener = new TicketCreatedListener('payments-service')
+  await ticketCreatedListener.listen()
 }
 
 run().catch(console.error)
-

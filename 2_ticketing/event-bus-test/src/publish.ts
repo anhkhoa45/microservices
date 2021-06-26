@@ -1,25 +1,16 @@
-import { Kafka } from 'kafkajs'
- 
-const kafka = new Kafka({
-  clientId: 'producer',
-  brokers: ['kafka.kafka.svc.cluster.local:9092']
-})
+import { TicketCreatedPublisher } from "./events/ticket-created-publisher"
 
-const producer = kafka.producer()
- 
+const ticketCreatedPublisher = new TicketCreatedPublisher()
+
 const run = async () => {
-  // Producing
-  console.log('Connecting to kafka ...')
-  await producer.connect()
-  console.log("Publishing message ...")
-  await producer.send({
-    topic: 'test-topic',
-    messages: [
-      { value: 'Hello KafkaJS user!' },
-    ],
-  })
-
-  console.log("Message published")
+  await ticketCreatedPublisher.publish([
+    {
+      id: 'abc',
+      title: 'aasdewr',
+      price: 20
+    }
+  ])
+  console.log('Message published')
 }
 
 setInterval(() => {

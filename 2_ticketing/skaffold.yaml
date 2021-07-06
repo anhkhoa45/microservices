@@ -62,6 +62,8 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
+          - src: '**/*.vue'
+            dest: .
     - image: anhkhoa45/event-bus-test
       context: event-bus-test
       docker:

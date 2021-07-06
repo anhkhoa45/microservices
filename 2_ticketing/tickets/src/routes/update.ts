@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 import { currentUser, NotAuthorizedError, NotFoundError, requireAuth, validateRequest } from '@ak-tickets/common'
 import { Ticket } from '../models/ticket'
+import { kafkaProducer } from '../kafka-client'
+import { TicketUpdatedPublisher } from '../events/ticket-updated-publisher'
 
 const router = express.Router()
 
@@ -33,7 +35,15 @@ router.put('/api/tickets/:id',
         ticket.title = title
         ticket.price = price
 
-        ticket.save()
+        const ticketUpdatedPublisher = new TicketUpdatedPublisher(kafkaProducer.producer)
+        await ticketUpdatedPublisher.publish([{
+            id: ticket.id,
+            title: ticket.title,
+            price: ticket.price,
+            userId: ticket.userId
+        }], async () => {
+            await ticket.save()
+        })
 
         res.status(201).send(ticket)
 })

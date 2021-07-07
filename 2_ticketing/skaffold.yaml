@@ -23,7 +23,7 @@ deploy:
         namespace: kafka
         createNamespace: true
         setValues:
-          replicaCount: 3
+          replicaCount: 1
           persistence.enabled: false
       - name: cmak
         remoteChart: cmak/cmak-operator

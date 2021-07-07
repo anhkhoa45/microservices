@@ -1,9 +1,6 @@
 <template>
-  <App />
+  <h1>A VueJS app</h1>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-
-export default Vue.extend({})
+<script>
 </script>
